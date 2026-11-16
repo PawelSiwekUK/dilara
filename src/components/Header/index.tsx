@@ -50,7 +50,7 @@ export function Header() {
               strokeWidth={1.5}
             />
             <X
-              className={`absolute inset-0 transition-[opacity,transform] duration-200 motion-reduce:transition-none ${menuOpen ? 'rotate-0 scale-100 opacity-100' : '-rotate-90 scale-75 opacity-0'}`}
+              className={` size-6 absolute inset-0 transition-[opacity,transform] duration-200 motion-reduce:transition-none ${menuOpen ? 'rotate-0 scale-100 opacity-100' : '-rotate-90 scale-75 opacity-0'}`}
               size={24}
               strokeWidth={1.5}
             />
@@ -66,7 +66,7 @@ export function Header() {
             width={363}
             height={188}
             alt="Dilara's Finesse"
-            className="h-auto w-[28vw] max-w-[200px]"
+            className="h-auto w-[28vw] max-w-[27`0px]"
             preload
           />
         </a>
@@ -84,7 +84,7 @@ export function Header() {
                   onClick={() => setMenuOpen(false)}
                 >
                   {label}
-                  <Plus className="size-4 shrink-0 md:hidden" aria-hidden="true" />
+                  <Plus className="size-5 shrink-0 md:hidden" aria-hidden="true" />
                 </a>
               </li>
             ))}
@@ -112,21 +112,21 @@ export function Header() {
         </nav>
         <div className="col-start-3 row-start-1 flex justify-self-end">
           <a aria-label="Customer login" className="p-1 sm:mx-2" href="/login">
-            <User className="size-5 sm:size-8" aria-hidden="true" size={32} strokeWidth={1.5} />
+            <User className="size-6 md:size-7" aria-hidden="true" size={32} strokeWidth={1.5} />
           </a>
           <a
             aria-label="Cart on the existing store"
             className="p-1 sm:mx-2"
             href={`${storeURL}/cart-page`}
           >
-            <Heart className="size-5 sm:size-8" aria-hidden="true" size={32} strokeWidth={1.5} />
+            <Heart className="size-6 md:size-7" aria-hidden="true" size={32} strokeWidth={1.5} />
           </a>
           <a
             aria-label="Cart on the existing store"
             className="p-1 sm:mx-2"
             href={`${storeURL}/cart-page`}
           >
-            <Handbag className="size-5 sm:size-8" aria-hidden="true" size={32} strokeWidth={1.5} />
+            <Handbag className="size-6 md:size-7" aria-hidden="true" size={32} strokeWidth={1.5} />
           </a>
         </div>
       </div>

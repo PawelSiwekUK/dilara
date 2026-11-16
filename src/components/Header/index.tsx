@@ -66,7 +66,7 @@ export function Header() {
             width={363}
             height={188}
             alt="Dilara's Finesse"
-            className="h-auto w-[28vw] max-w-[27`0px]"
+            className="h-auto w-[40vw] max-w-[270px] sm:w-[30vw]"
             preload
           />
         </a>

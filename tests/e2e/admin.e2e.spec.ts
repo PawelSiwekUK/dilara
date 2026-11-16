@@ -32,6 +32,24 @@ test.describe('Admin Panel', () => {
     await expect(listViewArtifact).toBeVisible()
   })
 
+  test('can access core content and e-commerce collections', async () => {
+    const collections = [
+      ['categories', 'Categories'],
+      ['media', 'Media'],
+      ['forms', 'Forms'],
+      ['form-submissions', 'Form Submissions'],
+      ['products', 'Products'],
+      ['carts', 'Carts'],
+      ['orders', 'Orders'],
+      ['transactions', 'Transactions'],
+    ]
+
+    for (const [slug, title] of collections) {
+      await page.goto(`http://localhost:3000/admin/collections/${slug}`)
+      await expect(page.locator('h1', { hasText: title }).first()).toBeVisible()
+    }
+  })
+
   test('can navigate to edit view', async () => {
     await page.goto('http://localhost:3000/admin/collections/users/create')
     await expect(page).toHaveURL(/\/admin\/collections\/users\/[a-zA-Z0-9-_]+/)

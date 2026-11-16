@@ -18,6 +18,9 @@ const nextConfig: NextConfig = {
   images: {
     localPatterns: [
       {
+        pathname: '/logo.avif',
+      },
+      {
         pathname: '/api/media/file/**',
       },
     ],

@@ -7,7 +7,6 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useAuth } from '@/providers/Auth'
-import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { getSafeRedirect } from 'payload/shared'
 import React, { useCallback, useRef } from 'react'
@@ -20,10 +19,9 @@ type FormData = {
 
 export const LoginForm: React.FC = () => {
   const searchParams = useSearchParams()
-  const allParams = searchParams.toString() ? `?${searchParams.toString()}` : ''
   const redirect = useRef(
     getSafeRedirect({
-      fallbackTo: '/account',
+      fallbackTo: '/',
       redirectTo: searchParams.get('redirect') ?? '',
     }),
   )
@@ -32,16 +30,18 @@ export const LoginForm: React.FC = () => {
   const [error, setError] = React.useState<null | string>(null)
 
   const {
-    formState: { errors, isLoading },
+    formState: { errors, isSubmitting },
     handleSubmit,
     register,
   } = useForm<FormData>()
 
   const onSubmit = useCallback(
     async (data: FormData) => {
+      setError(null)
       try {
         await login(data)
         router.push(redirect.current)
+        router.refresh()
       } catch (_) {
         setError('There was an error with the credentials provided. Please try again.')
       }
@@ -51,13 +51,16 @@ export const LoginForm: React.FC = () => {
 
   return (
     <form className="" onSubmit={handleSubmit(onSubmit)}>
-      <Message className="classes.message" error={error} />
+      <div role="alert">
+        <Message error={error} />
+      </div>
       <div className="flex flex-col gap-8">
         <FormItem>
           <Label htmlFor="email">Email</Label>
           <Input
             id="email"
             type="email"
+            autoComplete="email"
             {...register('email', { required: 'Email is required.' })}
           />
           {errors.email && <FormError message={errors.email.message} />}
@@ -68,27 +71,17 @@ export const LoginForm: React.FC = () => {
           <Input
             id="password"
             type="password"
+            autoComplete="current-password"
             {...register('password', { required: 'Please provide a password.' })}
           />
           {errors.password && <FormError message={errors.password.message} />}
         </FormItem>
 
-        <div className="text-primary/70 mb-6 prose prose-a:hover:text-primary dark:prose-invert">
-          <p>
-            Forgot your password?{' '}
-            <Link href={`/forgot-password${allParams}`}>Click here to reset it</Link>
-          </p>
-        </div>
       </div>
 
-      <div className="flex gap-4 justify-between">
-        <Button asChild variant="outline" size="lg">
-          <Link href={`/create-account${allParams}`} className="grow max-w-[50%]">
-            Create an account
-          </Link>
-        </Button>
-        <Button className="grow" disabled={isLoading} size="lg" type="submit" variant="default">
-          {isLoading ? 'Processing' : 'Continue'}
+      <div className="mt-8 flex">
+        <Button className="grow" disabled={isSubmitting} size="lg" type="submit" variant="default">
+          {isSubmitting ? 'Signing in...' : 'Sign in'}
         </Button>
       </div>
     </form>

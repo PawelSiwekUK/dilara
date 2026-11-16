@@ -5,7 +5,7 @@ import type { PayloadAdminBarProps } from '@payloadcms/admin-bar'
 import { cn } from '@/utilities/cn'
 import { useSelectedLayoutSegments } from 'next/navigation'
 import { PayloadAdminBar } from '@payloadcms/admin-bar'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { User } from '@/payload-types'
 
 const collectionLabels = {
@@ -31,6 +31,11 @@ export const AdminBar: React.FC<{
   const { adminBarProps } = props || {}
   const segments = useSelectedLayoutSegments()
   const [show, setShow] = useState(false)
+  const [cmsURL, setCmsURL] = useState<string>()
+
+  useEffect(() => {
+    setCmsURL(window.location.origin)
+  }, [])
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore - todo fix, not sure why this is erroring
   const collection = collectionLabels?.[segments?.[1]] ? segments?.[1] : 'pages'
@@ -49,6 +54,7 @@ export const AdminBar: React.FC<{
       })}
     >
       <div className="container">
+        {cmsURL ? (
         <PayloadAdminBar
           {...adminBarProps}
           className="py-2 text-white"
@@ -57,7 +63,7 @@ export const AdminBar: React.FC<{
             logo: 'text-white',
             user: 'text-white',
           }}
-          cmsURL={process.env.NEXT_PUBLIC_SERVER_URL}
+          cmsURL={cmsURL}
           collectionLabels={{
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore - todo fix, not sure why this is erroring
@@ -77,6 +83,7 @@ export const AdminBar: React.FC<{
             zIndex: 'unset',
           }}
         />
+        ) : null}
       </div>
     </div>
   )

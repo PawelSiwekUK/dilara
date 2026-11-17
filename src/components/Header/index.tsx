@@ -2,6 +2,7 @@
 
 import { Handbag, Heart, Menu, Plus, User, X } from 'lucide-react'
 import Image from 'next/image'
+import { usePathname } from 'next/navigation'
 import { useId, useRef, useState } from 'react'
 const storeURL = ''
 
@@ -19,9 +20,12 @@ const moreLinks = [
 ]
 
 export function Header() {
+  const pathname = usePathname()
   const [menuOpen, setMenuOpen] = useState(false)
   const menuId = useId()
   const menuButton = useRef<HTMLButtonElement>(null)
+
+  if (pathname === '/') return null
 
   return (
     <header

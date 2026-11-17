@@ -53,6 +53,26 @@ That's it! Changes made in `./src` will be reflected in your app. Follow the on-
 
 ## How it works
 
+### Landing page
+
+The homepage at `/` is a React and compiled Tailwind CSS adaptation of the supplied
+Dilara's Finesse storefront. Its sections and interactive previews are in
+[`src/components/Storefront`](src/components/Storefront), with sample products and
+images defined in [`data.ts`](src/components/Storefront/data.ts).
+
+The responsive navigation, hero selector, product rail, quick-view, search, wishlist,
+and preview bag work without catalogue data. Bag and wishlist selections last only
+for the current visit and do not create Payload carts or orders. Category shopping,
+social profiles, legal pages, and concierge messaging explicitly indicate that
+they are not connected. Connect these to live services before launch, and verify
+the supplied boutique, delivery, hallmarking, and financial-regulatory copy.
+
+The page uses Google Fonts through `next/font` and Unsplash images through
+`next/image`; font downloads require network access during the build. The original
+desktop/mobile preview switcher is intentionally omitted in favour of real responsive
+breakpoints. Category dots are decorative because the source supplies only one image
+per category.
+
 The Payload config is tailored specifically to the needs of most websites. It is pre-configured in the following ways:
 
 ### Collections

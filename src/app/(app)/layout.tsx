@@ -5,7 +5,27 @@ import { Providers } from '@/providers'
 import { InitTheme } from '@/providers/Theme/InitTheme'
 import { GeistMono } from 'geist/font/mono'
 import localFont from 'next/font/local'
+import { Cormorant_Garamond, Great_Vibes, Plus_Jakarta_Sans } from 'next/font/google'
 import './globals.css'
+
+const jakarta = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  variable: '--font-jakarta',
+  display: 'swap',
+})
+const cormorant = Cormorant_Garamond({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  style: ['normal', 'italic'],
+  variable: '--font-cormorant',
+  display: 'swap',
+})
+const greatVibes = Great_Vibes({
+  subsets: ['latin'],
+  weight: '400',
+  variable: '--font-great-vibes',
+  display: 'swap',
+})
 
 const googleSans = localFont({
   src: [
@@ -28,7 +48,7 @@ const googleSans = localFont({
 export default async function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
-      className={`${googleSans.variable} ${GeistMono.variable}`}
+      className={`${googleSans.variable} ${GeistMono.variable} ${jakarta.variable} ${cormorant.variable} ${greatVibes.variable}`}
       lang="en"
       suppressHydrationWarning
     >
@@ -38,7 +58,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
       <body>
         <Providers>
           <Header />
-          <main>{children}</main>
+          {children}
         </Providers>
       </body>
     </html>

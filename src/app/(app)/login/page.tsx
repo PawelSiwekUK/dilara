@@ -9,11 +9,11 @@ export const metadata: Metadata = {
 
 export default function LoginPage() {
   return (
-    <section className="mx-auto w-full max-w-md px-4 py-12">
+    <main className="mx-auto w-full max-w-md px-4 py-12">
       <h1 className="mb-8 text-2xl font-semibold">Customer login</h1>
       <Suspense fallback={<p>Loading login form...</p>}>
         <LoginForm />
       </Suspense>
-    </section>
+    </main>
   )
 }

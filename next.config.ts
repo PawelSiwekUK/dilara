@@ -26,6 +26,11 @@ const nextConfig: NextConfig = {
     ],
     qualities: [90, 100],
     remotePatterns: [
+      {
+        hostname: 'images.unsplash.com',
+        protocol: 'https',
+        pathname: '/**',
+      },
       ...[NEXT_PUBLIC_SERVER_URL /* 'https://example.com' */].map((item) => {
         const url = new URL(item)
 

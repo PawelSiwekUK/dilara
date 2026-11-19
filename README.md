@@ -10,19 +10,12 @@ with the customer before work starts.
 ## Current project
 
 The project is a Next.js application. The landing page at `/` is a restored visual
-preview; `/shop` is a disconnected shop page.
+preview; the shop and backend have not yet been built.
 
 - The landing page uses example products and external images. Its bag and wishlist
   interactions are temporary previews, not a working checkout.
-- The shop catalogue is not connected to a database.
-- The [temporary e-commerce adapter](src/lib/ecommerce.ts) reports cart, address,
-  pricing and payment services as unavailable. It does not store data or take payment.
-- The [temporary authentication adapter](providers/Auth/index.ts) does not
-  authenticate or authorise users. The login page states that authentication is not
-  connected.
-- Some existing routes and components still depend on Payload imports and generated
-  types. A TypeScript check currently reports missing Payload-related dependencies
-  and types elsewhere in the project.
+- Products, stock, customer accounts, orders and payments are not connected to a
+  backend or database.
 - The preview includes business, delivery, returns, finance and hallmarking claims.
   The customer must verify or remove these before launch; do not assume they are true.
 
@@ -37,10 +30,10 @@ npm ci
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) for the landing page and
-[http://localhost:3000/shop](http://localhost:3000/shop) for the shop preview.
-The landing page entry point is [src/app/page.tsx](src/app/page.tsx); its
-components and sample data are in [src/components/Storefront](src/components/Storefront).
+Open [http://localhost:3000](http://localhost:3000) for the landing page.
+The landing page entry point is [src/app/page.tsx](src/app/page.tsx); the
+storefront is in [src/components/Storefront/index.tsx](src/components/Storefront/index.tsx),
+with sample data in [src/components/Storefront/data.ts](src/components/Storefront/data.ts).
 
 Useful checks:
 
@@ -50,7 +43,6 @@ npx tsc --noEmit
 npm run build
 ```
 
-The full checks may fail until the existing unresolved integrations are addressed.
 Do not treat a successful development-page load as evidence that the whole application
 is ready for production.
 

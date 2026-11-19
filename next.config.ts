@@ -7,6 +7,15 @@ const nextConfig: NextConfig = {
   },
   cacheComponents: true,
   partialPrefetching: true,
+  async headers() {
+    return ["/account/verify", "/account/reset"].map((source) => ({
+      source,
+      headers: [
+        { key: "Referrer-Policy", value: "no-referrer" },
+        { key: "Cache-Control", value: "no-store" },
+      ],
+    }));
+  },
   images: {
     qualities: [75, 90],
     remotePatterns: [

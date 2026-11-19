@@ -167,15 +167,14 @@ export function Storefront() {
             </div>
             <Brand />
             <div className="-mr-1 flex items-center justify-end sm:gap-2">
-              <button
-                type="button"
-                aria-label="Account unavailable"
-                title="Authentication is not connected yet."
-                disabled
-                className="p-1.5 opacity-50 sm:p-2"
+              <Link
+                href="/account"
+                aria-label="Customer account"
+                title="Customer account"
+                className="p-1.5 sm:p-2"
               >
                 <User size={18} strokeWidth={1.4} />
-              </button>
+              </Link>
               <button
                 aria-label={`Wishlist (${wishlist.length} items)`}
                 onClick={(event) => openPanel('wishlist', event.currentTarget)}
@@ -549,6 +548,9 @@ export function Storefront() {
                 {label}
               </button>
             ))}
+            <Link href="/admin/login" className="hover:text-brand-charcoal">
+              Admin sign in
+            </Link>
           </div>
           <p className="mx-auto mb-10 max-w-[680px] text-[9.5px] leading-[1.75] text-brand-muted sm:text-[10.5px]">
             Dilara&apos;s Finesse Ltd (Registered in England &amp; Wales) is authorised and

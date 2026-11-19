@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
 import {
   ArrowUpRight,
   Boxes,
@@ -16,6 +17,8 @@ import {
 } from 'lucide-react'
 
 import { products } from '@/src/components/Storefront/data'
+import { signOut } from '@/src/auth'
+import { getCurrentAdmin } from '@/src/lib/auth/admin'
 
 export const metadata: Metadata = {
   title: "Admin preview | Dilara's Finesse",
@@ -28,6 +31,7 @@ const navigation = [
   { href: '#orders', label: 'Orders', icon: ShoppingBag },
   { href: '#inventory', label: 'Inventory', icon: Boxes },
   { href: '#customers', label: 'Customers', icon: Users },
+  { href: '/admin/staff', label: 'Administrators', icon: Users },
   { href: '#settings', label: 'Settings', icon: Settings },
 ]
 
@@ -41,7 +45,9 @@ const summary = [
 const disabledButton =
   'inline-flex cursor-not-allowed items-center justify-center gap-2 rounded-md border border-stone-200 bg-stone-100 px-4 py-2.5 text-xs font-medium text-stone-400'
 
-export default function AdminPage() {
+export default async function AdminPage() {
+  if (!await getCurrentAdmin()) redirect('/admin/login')
+
   return (
     <div className="min-h-screen bg-[#f7f6f3] font-storefront text-brand-charcoal">
       <a href="#admin-main" className="sr-only fixed top-3 left-3 z-50 bg-white p-3 focus:not-sr-only">
@@ -62,14 +68,14 @@ export default function AdminPage() {
           </div>
           <nav aria-label="Admin sections" className="flex gap-1 overflow-x-auto px-4 pb-4 lg:flex-col lg:overflow-visible lg:px-4">
             {navigation.map(({ href, label, icon: Icon }) => (
-              <a
+              <Link
                 key={href}
                 href={href}
                 className="flex shrink-0 items-center gap-3 rounded-md px-3 py-2.5 text-sm text-stone-600 transition-colors hover:bg-stone-100 hover:text-stone-950"
               >
                 <Icon size={17} aria-hidden="true" />
                 {label}
-              </a>
+              </Link>
             ))}
           </nav>
           <div className="mt-auto hidden border-t border-stone-100 p-6 lg:block">
@@ -93,16 +99,21 @@ export default function AdminPage() {
                   A first look at managing your online boutique.
                 </p>
               </div>
-              <span className="rounded-full border border-stone-200 bg-white px-3 py-1.5 text-xs font-medium text-stone-600">
-                Preview only
-              </span>
+              <div className="flex items-center gap-3">
+                <span className="rounded-full border border-stone-200 bg-white px-3 py-1.5 text-xs font-medium text-stone-600">
+                  Preview only
+                </span>
+                <form action={async () => { 'use server'; await signOut({ redirectTo: '/' }) }}>
+                  <button type="submit" className="text-xs text-stone-500 underline hover:text-black">Sign out</button>
+                </form>
+              </div>
             </header>
 
             <div className="mt-7 flex items-start gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-4 text-sm text-amber-950">
               <LockKeyhole size={18} className="mt-0.5 shrink-0" aria-hidden="true" />
               <p>
-                <strong>Public, read-only preview.</strong> Sign-in and MongoDB are not connected.
-                The products below are examples; orders, customers and changes are unavailable.
+                <strong>Preview.</strong> Administrator role management is available, but the products below
+                are examples; orders, customer management and stock changes are unavailable.
                 Do not enter real customer or business data.
               </p>
             </div>
@@ -203,7 +214,7 @@ export default function AdminPage() {
                 </div>
                 <div className="mt-5 rounded-md bg-stone-50 px-4 py-6 text-center">
                   <p className="text-sm font-medium">Customer data is not connected</p>
-                  <p className="mt-1 text-xs text-stone-500">Do not use this public preview for real data.</p>
+                  <p className="mt-1 text-xs text-stone-500">Do not use this preview for real data.</p>
                 </div>
               </section>
               <section id="settings" className="scroll-mt-6 rounded-lg border border-stone-200 bg-white p-6">

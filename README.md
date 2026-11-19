@@ -14,12 +14,11 @@ preview; the shop and backend have not yet been built.
 
 - The landing page uses example products and external images. Its bag and wishlist
   interactions are temporary previews, not a working checkout.
-- Products, stock, customer accounts, orders and payments are not connected to a
-  backend or database.
-- `/admin` is a public, read-only UI preview using example products. It has no
-  authentication, MongoDB connection or working management actions. Do not enter
-  real business or customer data. Secure authentication and authorisation are
-  required before connecting real data or management features.
+- Products, stock, orders and payments are not connected to a backend or database.
+  Customer accounts require the email configuration described below.
+- `/admin` is an admin-only UI preview using example products. Staff roles can be
+  managed, but product, order and stock management are not connected. Do not enter
+  real business or customer data.
 - The preview includes business, delivery, returns, finance and hallmarking claims.
   The customer must verify or remove these before launch; do not assume they are true.
 
@@ -40,13 +39,102 @@ The landing page entry point is [src/app/page.tsx](src/app/page.tsx); the
 storefront is in [src/components/Storefront/index.tsx](src/components/Storefront/index.tsx),
 with sample data in [src/components/Storefront/data.ts](src/components/Storefront/data.ts).
 
+### MongoDB connection
+
+Set `MONGODB_URI` to the MongoDB connection string and `MONGODB_DB` to the database
+name in the root `.env` file. Keep credentials out of version control. The
+server-only `connectDb()` helper in [src/lib/mongoDb/index.ts](src/lib/mongoDb/index.ts)
+connects Mongoose and returns the underlying database, reusing the connection.
+Use it from Node.js server code, not client components or the Edge runtime.
+
+The helper does not connect the preview pages to live data.
+
+### Users collection
+
+Run `npm run db:setup-users` against the intended database to create the `users`
+collection, enforce its schema and add a case-insensitive unique email index.
+The command is safe to rerun and upgrades the previous known validator to allow
+email verification dates; it refuses to replace other validators. Migrate existing
+data and schema deliberately before running it against a different collection.
+
+The [user model](src/lib/mongoDb/users.ts) has an email, optional name, `admin` or
+`customer` role, and creation and update timestamps. Mongoose manages timestamps for
+model writes; direct database writes must set them.
+Email lookups must use the index's `{ locale: "en", strength: 2 }` collation.
+The model does not implement sign-in or authorisation. Only trusted server code
+should assign roles; never let a customer choose an admin role.
+The setup and admin scripts use the MongoDB driver for database validation and
+transactional provisioning; Mongoose uses the same database and collection.
+
+### Admin authentication
+
+Run `npm run auth:secret` to generate a local Auth.js session secret, then run
+`npm run auth:create-admin` in an interactive terminal to create an administrator.
+The command prompts for a password and stores only an Argon2id hash. It creates a
+new user and will not promote or overwrite an existing account. The MongoDB
+deployment must support transactions. Sign in at `/admin/login`. The storefront
+footer also links to the admin sign-in.
+
+To assign the first owner, set `ADMIN_EMAIL` to an existing administrator's email
+and run `npm run auth:assign-owner`. This updates the users validator and promotes
+that account without changing its password; the account must sign in again. The
+command refuses to assign a different owner once one exists. Owners and admins can
+manage administrators and invitations, but only owners can grant or remove the
+owner role. At least one owner must remain. Deploy the updated application before
+assigning an owner to a database used by a deployed older version, because older
+versions do not recognize the owner role.
+
+At `/admin/staff`, an administrator can create a one-time invitation for a new
+administrator and share the link privately. It expires after 24 hours and requires
+no email service. Anyone holding the link can accept it; the email is not
+independently verified. Invitations are invalidated if the issuing admin loses
+access or their session version changes. Existing accounts cannot use invitations;
+verified customers can be promoted instead. Links generated on localhost only work
+on the local machine; generate links on the deployed site for remote recipients.
+
+Admin sessions are checked against the current MongoDB role on each request.
+For both admin and customer sign-in, sessions expire after at most eight hours,
+or seven days when "Remember me" is selected. Avoid it on shared devices.
+At `/admin/staff`, administrators can promote verified customers or remove another
+administrator's access. Role changes revoke the affected user's sessions, and
+administrators cannot change their own role. A demoted administrator whose email
+is unverified must verify it through customer registration before customer sign-in.
+Login attempts are limited per email and globally using MongoDB; the global limit
+can temporarily block legitimate logins under attack. Future endpoints and server
+actions must perform their own server-side authentication and role checks.
+Configure a unique `AUTH_SECRET` and HTTPS in production, and protect database
+access. Admin password reset, MFA, audit logging, account lifecycle management,
+and deployment-specific abuse protection are not implemented; add and test them
+before launch. The preview is not production-ready.
+
+### Customer accounts
+
+The storefront account icon opens customer sign-in and registration. Registration
+requires verification of the email address before a password can be chosen. Reset
+links are single-use and expire; resetting a password invalidates customer sessions.
+
+Configure `RESEND_API_KEY`, `EMAIL_FROM` (an address on a verified Resend domain)
+and `APP_URL` (the site origin, using HTTPS in production) in `.env.local` or the
+deployment environment. HTTP localhost is permitted only outside production.
+Never commit the API key. Run `npm run db:setup-users` to apply the compatible
+validator update. MongoDB must support transactions for registration and recovery.
+No emails can be sent until Resend is configured; test delivery using a verified
+sender and controlled recipient before launch. The global and per-email throttles
+can block legitimate requests under attack and are not a replacement for
+deployment-specific abuse controls.
+
 Useful checks:
 
 ```bash
 npm run lint
+npm run test:users
 npx tsc --noEmit
 npm run build
 ```
+
+For the staff integration test, set `TEST_MONGODB_URI` to a MongoDB deployment
+that supports transactions and run `npm run test:staff`. The test creates and
+removes a uniquely named temporary database and mocks email delivery.
 
 Do not treat a successful development-page load as evidence that the whole application
 is ready for production.

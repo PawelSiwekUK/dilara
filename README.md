@@ -1,42 +1,360 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Dilara's Finesse: e-commerce project guide
 
-## Getting Started
+This document records the current project status and a proposed plan for turning the
+preview into a functional online jewellery shop. It is a planning guide, not an
+approved contract, legal advice, or a guarantee that every listed feature is included
+in the proposed price. A custom Next.js storefront and backend are the chosen
+approach; agree the database, integrations, final scope, responsibilities and costs
+with the customer before work starts.
 
-First, run the development server:
+## Current project
+
+The project is a Next.js application. The landing page at `/` is a restored visual
+preview; `/shop` is a disconnected shop page.
+
+- The landing page uses example products and external images. Its bag and wishlist
+  interactions are temporary previews, not a working checkout.
+- The shop catalogue is not connected to a database.
+- The [temporary e-commerce adapter](src/lib/ecommerce.ts) reports cart, address,
+  pricing and payment services as unavailable. It does not store data or take payment.
+- The [temporary authentication adapter](providers/Auth/index.ts) does not
+  authenticate or authorise users. The login page states that authentication is not
+  connected.
+- Some existing routes and components still depend on Payload imports and generated
+  types. A TypeScript check currently reports missing Payload-related dependencies
+  and types elsewhere in the project.
+- The preview includes business, delivery, returns, finance and hallmarking claims.
+  The customer must verify or remove these before launch; do not assume they are true.
+
+**Do not use the preview to accept real orders or payments.**
+
+### Running locally
+
+Install the project's dependencies, then run the development server:
 
 ```bash
+npm ci
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) for the landing page and
+[http://localhost:3000/shop](http://localhost:3000/shop) for the shop preview.
+The landing page entry point is [src/app/page.tsx](src/app/page.tsx); its
+components and sample data are in [src/components/Storefront](src/components/Storefront).
 
-## Ecommerce integration
+Useful checks:
 
-The temporary [ecommerce adapter](src/lib/ecommerce.ts) reports cart, address, pricing, and payment services as unavailable. Connect those services before enabling checkout; the adapter does not store data or process payments.
+```bash
+npm run lint
+npx tsc --noEmit
+npm run build
+```
 
-The temporary [auth adapter](providers/Auth/index.ts) does not authenticate users or authorize requests. Connect a real authentication system before enabling account features.
+The full checks may fail until the existing unresolved integrations are addressed.
+Do not treat a successful development-page load as evidence that the whole application
+is ready for production.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 1. Commerce architecture
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The shop will use a custom Next.js storefront and backend, with the existing project
+as a starting point. This gives more control over the implementation and data model,
+but also brings greater development, testing, security and maintenance responsibility.
 
-## Learn More
+Next.js does not by itself provide product management, a database, checkout or
+order fulfilment. The database, backend deployment, payment provider, email service
+and other integrations still need to be chosen. A hosted payment provider remains an
+option for securely processing payments. Confirm the scope against the proposed
+budget; a custom backend and administration area may require a revised estimate.
 
-To learn more about Next.js, take a look at the following resources:
+## 2. Discovery and scope
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Agree and document the following before design or development:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Business goals, target customers and the initial sales regions.
+- Number of products at launch, product categories and variations such as size,
+  finish or gemstone.
+- Whether products are in stock, made to order or personalised.
+- Whether stock is shared with physical shops and, if so, how it will be updated.
+- Prices, currency and applicable tax treatment, confirmed by the business and its
+  accountant.
+- Delivery destinations, charges, expected times, insurance and tracking.
+- Returns, cancellations, faulty goods, customer support and refund processes.
+- Who provides product information, photographs, logo, copy, legal text and policies.
+- Who manages products, orders, stock and customer enquiries after launch.
+- Whether existing products, customers or orders need to be migrated.
+- Required integrations, payment methods, accounts and access.
+- Accessibility, supported devices, acceptance criteria and launch responsibilities.
 
-## Deploy on Vercel
+### Suggested first release
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Subject to agreement, a small first release could include:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Responsive home, shop, product, contact and policy pages.
+- Product categories, product details and a working basket.
+- Guest checkout with one payment provider.
+- UK delivery options and clearly displayed charges.
+- Order confirmation and a practical way for the owner to manage products, stock
+  and orders.
+- Testing, deployment and handover.
+
+Customer accounts are optional if the business has a suitable guest-checkout and
+order-support process. Consider pricing the following separately unless specifically
+included: customer accounts, wishlists, reviews, loyalty points, gift cards, discount
+codes, international shipping, multiple currencies, finance, advanced reporting,
+automated physical-shop stock synchronisation and custom product configurators.
+
+The agreed specification should state what is included and excluded, who supplies
+content, how changes are priced, who approves each stage, the timetable assumptions,
+third-party costs and what counts as completion.
+
+## 3. Design
+
+Present three initial visual directions for the customer to consider. For example:
+
+1. Luxury and minimal: neutral colours, large images and elegant typography.
+2. Traditional jewellery boutique: warmer colours and a heritage-focused presentation.
+3. Modern editorial: stronger photography and a contemporary layout.
+
+The customer selects one direction to refine and apply to the agreed pages. Agree
+the number of revision rounds in advance; two rounds after selection is one possible
+proposal, not an existing commitment.
+
+Design should cover branding, desktop and mobile layouts, navigation, product and
+category pages, basket and checkout journeys, contact and policy pages, and
+appropriate loading, empty and error states.
+
+The customer should supply or approve accurate product details, prices, photographs,
+logo files, brand copy and business information. Use images and other content only
+with appropriate permission. Verify all claims before publishing them.
+
+## 4. Customer-facing development
+
+### Core experience
+
+- **Home:** brand introduction, featured products or collections, navigation and
+  contact information.
+- **Shop:** categories, product names, images and prices; availability indicators;
+  and agreed sorting, filtering or pagination.
+- **Product page:** images, description, price, materials, fineness, applicable
+  hallmark details, dimensions, stone information, variations, stock, delivery
+  information and add-to-basket action, as relevant to the product.
+- **Basket:** add, remove and change quantities; show chosen variations, prices and
+  subtotal; handle unavailable items and price changes; persist the basket as agreed.
+- **Checkout:** guest email, necessary address details, delivery choices and charges,
+  clear final order total, payment, error handling and confirmation.
+
+Prices, stock and final totals must be calculated or verified by trusted server-side
+code, not accepted solely from browser input.
+
+### Accessibility and mobile
+
+Aim for WCAG 2.2 AA as a practical target and test real customer journeys. Check
+keyboard navigation and focus, form labels and errors, contrast, image descriptions,
+screen-reader access, mobile controls and text resizing. Automated checks alone are
+not enough.
+
+## 5. Commerce data and administration
+
+Design and migrate a database appropriate to the agreed custom backend and features.
+A typical shop may need:
+
+| Record | Purpose |
+| --- | --- |
+| Products, categories and images | Catalogue, descriptions, media and publication status |
+| Product variations and inventory | Sizes or finishes, SKUs, prices and stock |
+| Carts | Products selected before purchase |
+| Orders and order items | Purchase details and a snapshot of item names and prices at purchase |
+| Payments and refunds | Provider references, amounts and statuses; never raw card details |
+| Addresses and customers | Necessary delivery, billing and contact details |
+
+Discounts, reviews, wishlists, gift cards and other records are optional, depending
+on the agreed scope. Use integer minor units such as pence for money and record the
+currency. Restrict access, validate data on the server, collect only necessary
+personal data and plan retention, backups and recovery.
+
+The owner needs an agreed way to add and edit products, manage prices and stock,
+view orders, mark dispatches and handle refunds. A custom administration area
+requires its own design, implementation and testing; agree its scope and cost.
+
+### Inventory and order workflow
+
+Agree whether stock is tracked per product or variation, whether backorders are
+allowed, how made-to-order goods are handled and how physical-shop stock is updated.
+Protect against overselling and define what happens if payment succeeds but stock
+is no longer available.
+
+Track payment and fulfilment separately. An order may be awaiting payment, paid,
+being prepared, dispatched, cancelled or refunded. The owner needs a way to identify
+new paid orders and resolve payment failures, cancellations and refunds. Some
+notifications can initially be handled in the provider's dashboard if agreed.
+
+## 6. Payments
+
+The customer should own the payment-provider account and complete its business and
+identity verification. A provider-hosted checkout is a practical option for reducing
+the application's exposure to card data. Do not store card numbers, CVV codes or
+other raw card details in the shop.
+
+An integration must handle successful, failed and cancelled payments; authentication
+challenges where required; customers closing the browser; refunds and disputes; and
+reconciliation between orders and payments. A visit to a confirmation page alone
+is not proof of payment.
+
+For a custom integration:
+
+- Create payment sessions using trusted product, price and delivery data.
+- Verify provider notifications and record payment results reliably.
+- Handle repeated or delayed notifications without duplicate orders or stock changes.
+- Plan for payment success when stock or order processing fails.
+- Test in the provider's test mode before controlled live testing.
+
+Hosted checkout reduces scope but does not automatically remove all payment-security
+responsibilities. The business should confirm applicable PCI requirements with its
+provider and acquiring bank. See the [PCI Security Standards Council's guidance
+on hosted and embedded payment pages](https://blog.pcisecuritystandards.org/faq-clarifies-new-saq-a-eligibility-criteria-for-e-commerce-merchants).
+
+## 7. Delivery, returns and emails
+
+Agree delivery regions, methods, prices, expected times, insurance, tracking, lost
+or damaged parcels and any click-and-collect process. Do not advertise a service the
+business cannot provide.
+
+Document how customers request cancellations, return items, report faults and receive
+refunds, including who pays return postage where legally permitted. UK distance
+selling and faulty-goods rules provide different protections, with conditions and
+exceptions. Have the final policy checked for the products sold. See
+[GOV.UK: accepting returns and giving refunds](https://www.gov.uk/accepting-returns-and-giving-refunds).
+
+At minimum, consider customer order confirmation and owner new-order notification.
+Dispatch and refund confirmations can also be included if agreed. Use a suitable
+transactional email provider, configure relevant domain authentication such as SPF,
+DKIM and DMARC, and test delivery. Marketing emails are separate from transactional
+emails and need their own compliant process.
+
+## 8. Legal, privacy and jewellery-specific review
+
+This guide is not legal or accounting advice. The customer should seek appropriate
+professional advice and approve the final policies and business information.
+
+- **Business and online sales:** show accurate business identity and contact details,
+  product prices, applicable charges, delivery arrangements and terms. Make clear
+  when an order creates an obligation to pay. See
+  [GOV.UK: online selling](https://www.gov.uk/online-and-distance-selling-for-businesses/online-selling).
+- **Privacy:** identify what personal data is collected, why, which providers receive
+  it, retention periods, security and customer rights. The privacy notice must match
+  the actual services used.
+- **Cookies and similar technologies:** audit analytics, advertising, embeds and
+  other storage or access. Consent is generally needed for non-exempt uses. A
+  limited statistical-purpose exception has conditions, including an objection
+  mechanism; do not assume every analytics tool qualifies. See the
+  [ICO's guidance](https://ico.org.uk/for-organisations/direct-marketing-and-privacy-and-electronic-communications/guidance-on-the-use-of-storage-and-access-technologies/).
+- **Hallmarking:** verify whether each precious-metal item requires a hallmark,
+  whether exemptions apply, whether descriptions are accurate and whether the
+  appropriate Dealer's Notice or hallmark information is displayed. See
+  [GOV.UK: hallmarking compliance](https://www.gov.uk/guidance/hallmarking-how-businesses-can-comply-with-the-law).
+- **Product safety:** review applicable material restrictions, product information
+  and supplier traceability. See [GOV.UK: product safety advice](https://www.gov.uk/guidance/product-safety-advice-for-businesses).
+- **Tax and international sales:** confirm VAT and record-keeping with an accountant.
+  International sales may introduce additional tax, customs, delivery and consumer
+  law requirements; a UK-only first release can reduce complexity.
+- **Preview claims:** verify or remove all claims about delivery, returns, finance,
+  FCA authorisation, hallmarking, locations and other business details before launch.
+
+## 9. Security, ownership and recovery
+
+- Use HTTPS, secure hosting and database configuration, and appropriate separation
+  between development, test and live environments.
+- Use strong credentials, multi-factor authentication and individual administrator
+  accounts with role-appropriate access.
+- Protect secrets; validate data, prices, stock and permissions on the server.
+- Protect sensitive endpoints, keep dependencies updated and log errors without
+  unnecessarily exposing personal information.
+- Use a proven authentication solution if customer accounts are added; do not invent
+  password-storage or authentication security.
+- Set up backups, test restoration and define an incident-response process.
+- The customer should own or have administrator access to the domain, hosting,
+  payment provider, commerce or database service, email provider, analytics and
+  source repository as agreed. Developer access should be granted separately.
+
+## 10. Testing and launch
+
+### Before launch
+
+- [ ] Replace example products, images, prices and contact details with approved data.
+- [ ] Verify business claims and publish approved terms, privacy, delivery and
+      returns information.
+- [ ] Test categories, products, variations and basket changes.
+- [ ] Test guest checkout, delivery charges, payment success, failure and cancellation.
+- [ ] Test browser closure during payment, provider notifications, duplicate events,
+      order creation, emails and refunds.
+- [ ] Test stock shortages and price changes between basket and checkout.
+- [ ] Confirm the owner can manage products, stock and orders.
+- [ ] Test key journeys on agreed devices and browsers, including accessibility.
+- [ ] Run the production build, type checks and relevant automated tests.
+- [ ] Configure live domain, HTTPS, credentials, backups, monitoring and email.
+- [ ] Confirm the payment account is approved and switch from test to live mode.
+- [ ] Check indexing and sitemap, and agree a rollback plan.
+- [ ] If the customer agrees, place a controlled live test order and refund or fulfil it.
+- [ ] Obtain customer acceptance and complete handover.
+
+Agree acceptance criteria in advance. A working home page or payment confirmation
+screen alone does not demonstrate that the complete order-to-dispatch process works.
+
+## 11. After launch
+
+### Business operations
+
+The business needs to check and fulfil orders, keep stock and prices accurate,
+answer enquiries, manage returns and refunds, and investigate payment problems.
+Someone must own product updates, content, policy reviews and customer service.
+
+### Technical maintenance
+
+Assign responsibility for dependency and platform updates, security advisories,
+uptime and error monitoring, failed emails and payment notifications, backups and
+restore tests, account access reviews, renewals and provider costs. Maintain a
+process for incidents, recovery and urgent support.
+
+Agree a separate support arrangement covering fees, support hours, response targets,
+included routine maintenance, exclusions, urgent work, new features and termination.
+Do not assume ongoing support or product entry is included in the build fee.
+
+## 12. Costs, estimate and commercial terms
+
+The proposed development estimate discussed with the customer is **£2,500**, subject
+to agreeing the database, integrations and a clearly limited scope. The suggested
+payment split is:
+
+| Milestone | Payment |
+| --- | ---: |
+| Project start | 30%: £750 |
+| Chosen design and agreed front-end pages approved | 40%: £1,000 |
+| Agreed shop features pass acceptance testing and are ready for handover | 30%: £750 |
+
+Define the milestones, acceptance process, tax treatment and payment terms in the
+final agreement. Significant backend, payment and testing work may remain after the
+front-end milestone. A fully custom shop may require a revised estimate.
+
+For context, £2,500 over 100 hours is £25/hour; over 150 hours it is approximately
+£16.67/hour; over 200 hours it is £12.50/hour. These are illustrations, not a time
+estimate, and are before tax and business expenses.
+
+Unless expressly included, the customer should budget separately for domain renewal,
+hosting or platform subscriptions, database, payment transaction fees, email,
+storage, backups and monitoring, paid apps or plugins, maintenance and support,
+legal/accounting advice, photography, copywriting and marketing. Obtain current
+quotes for the chosen services before making commitments.
+
+Before work starts, agree revision limits, product-entry quantities, ownership of
+content and accounts, scope exclusions, a bug-fix period, how changes are priced,
+responsibilities for third-party costs and how delays or acceptance are handled.
+
+## Proposed stages
+
+1. **Discovery:** agree requirements, database, integrations, scope and responsibilities.
+2. **Design:** present three directions and refine the selected one.
+3. **Front end:** build and approve the agreed responsive pages.
+4. **Commerce:** connect catalogue, stock, basket, checkout and order management.
+5. **Testing:** verify purchase, administration, fulfilment and refund workflows.
+6. **Launch:** configure live services, complete acceptance and hand over access.
+7. **Maintenance:** operate, support and improve the shop under a separate agreement.

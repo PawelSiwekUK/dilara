@@ -16,6 +16,10 @@ preview; the shop and backend have not yet been built.
   interactions are temporary previews, not a working checkout.
 - Products, stock, customer accounts, orders and payments are not connected to a
   backend or database.
+- `/admin` is a public, read-only UI preview using example products. It has no
+  authentication, MongoDB connection or working management actions. Do not enter
+  real business or customer data. Secure authentication and authorisation are
+  required before connecting real data or management features.
 - The preview includes business, delivery, returns, finance and hallmarking claims.
   The customer must verify or remove these before launch; do not assume they are true.
 
@@ -30,7 +34,8 @@ npm ci
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) for the landing page.
+Open [http://localhost:3000](http://localhost:3000) for the landing page or
+[http://localhost:3000/admin](http://localhost:3000/admin) for the admin preview.
 The landing page entry point is [src/app/page.tsx](src/app/page.tsx); the
 storefront is in [src/components/Storefront/index.tsx](src/components/Storefront/index.tsx),
 with sample data in [src/components/Storefront/data.ts](src/components/Storefront/data.ts).

@@ -16,6 +16,12 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Ecommerce integration
+
+The temporary [ecommerce adapter](src/lib/ecommerce.ts) reports cart, address, pricing, and payment services as unavailable. Connect those services before enabling checkout; the adapter does not store data or process payments.
+
+The temporary [auth adapter](providers/Auth/index.ts) does not authenticate users or authorize requests. Connect a real authentication system before enabling account features.
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.

@@ -1,12 +1,15 @@
 import "server-only";
 
 import { Types } from "mongoose";
+import { connection } from "next/server";
 
 import { auth } from "@/src/auth";
 import { connectDb } from "@/src/lib/mongoDb";
 import { UserModel } from "@/src/lib/mongoDb/users";
 
 export async function getCurrentUser() {
+  // Auth.js may use crypto before it reads request headers.
+  await connection();
   const session = await auth();
   const id = session?.user?.id;
   const version = session?.user?.sessionVersion;

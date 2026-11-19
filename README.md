@@ -47,6 +47,9 @@ server-only `connectDb()` helper in [src/lib/mongoDb/index.ts](src/lib/mongoDb/i
 connects Mongoose and returns the underlying database, reusing the connection.
 Use it from Node.js server code, not client components or the Edge runtime.
 
+The deployed app also needs both variables configured in its hosting environment,
+such as Vercel project settings; local `.env` files are not deployed.
+
 The helper does not connect the preview pages to live data.
 
 ### Users collection

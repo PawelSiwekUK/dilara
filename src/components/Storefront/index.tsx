@@ -385,23 +385,23 @@ export function Storefront() {
                 Category
               </h2>
             </div>
-            <div className="grid grid-cols-1 gap-6 sm:gap-8 md:grid-cols-2">
+            <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
               {categories.map((category) => (
                 <article key={category.name} className="group overflow-hidden bg-brand-surface">
-                  <div className="relative aspect-[16/10] overflow-hidden bg-[#eaeaea]">
+                  <h3 className="px-3 pt-4 pb-3 text-center text-[13px] font-normal uppercase tracking-brand sm:text-[15px]">
+                    {category.name}
+                  </h3>
+                  <div className="relative aspect-[4/5] overflow-hidden bg-[#eaeaea]">
                     <Image
                       src={category.image}
                       alt={`${category.name} collection`}
                       fill
                       quality={90}
-                      sizes="(max-width: 768px) 100vw, 50vw"
+                      sizes="(max-width: 1024px) 50vw, 25vw"
                       className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.035] motion-reduce:transition-none"
                     />
                   </div>
-                  <div className="flex flex-col items-center px-6 pt-6 pb-5 text-center">
-                    <h3 className="mb-4 text-[17px] font-normal uppercase tracking-brand sm:text-[19px]">
-                      {category.name}
-                    </h3>
+                  <div className="flex flex-col items-center px-3 pt-4 pb-4 text-center">
                     <button
                       className={buttonClass}
                       onClick={() =>

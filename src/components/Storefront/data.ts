@@ -77,7 +77,7 @@ export const categories = [
 
 export const navigation = [
   { href: '/', label: 'Home' },
-  { href: '#collections-section', label: 'Collections' },
+  { href: '/collections', label: 'Collections' },
   { href: '#heritage-section', label: 'About' },
   { href: '#service-strip', label: 'Shipping & Returns Policy' },
   { href: '#craftsmen-section', label: 'More' },

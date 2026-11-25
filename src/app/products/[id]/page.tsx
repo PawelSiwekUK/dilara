@@ -2,12 +2,13 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { Suspense } from 'react';
 
 import { products } from '@/src/app/home/data';
 import { money, ProductPrice } from '@/src/app/home/ProductPrice';
 
 type ProductPageProps = { params: Promise<{ id: string }> };
+
+export const instant = false;
 
 export function generateStaticParams() {
 	return products.map(({ id }) => ({ id }));
@@ -19,15 +20,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
 	return { title: product ? `${product.title} | Dilara's Finesse` : 'Product not found' };
 }
 
-export default function ProductPage({ params }: ProductPageProps) {
-	return (
-		<Suspense fallback={<p className='px-4 py-10 font-storefront text-brand-muted sm:px-8'>Loading product...</p>}>
-			<ProductDetails params={params} />
-		</Suspense>
-	);
-}
-
-async function ProductDetails({ params }: ProductPageProps) {
+export default async function ProductPage({ params }: ProductPageProps) {
 	const { id } = await params;
 	const product = products.find((item) => item.id === id);
 	if (!product) notFound();

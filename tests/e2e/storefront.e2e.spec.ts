@@ -1,5 +1,73 @@
 import { expect, test } from '@playwright/test'
 
+test.describe('Collection categories', () => {
+  test('opens product details and returns to the selected category', async ({ page }) => {
+    await page.goto('http://localhost:3000/collections?category=Bracelets')
+    await page.getByRole('link', { name: 'View Heart Station Chain Bracelet' }).click()
+    await expect(page).toHaveURL(/\/products\/p1$/)
+    await expect(page.getByRole('heading', { name: 'Heart Station Chain Bracelet', level: 1 })).toBeVisible()
+    await expect(page.getByText('18k Gold Vermeil / Silver')).toBeVisible()
+    await expect(page.getByLabel('Price £68')).toBeVisible()
+    await expect(page.getByRole('navigation', { name: 'Breadcrumb' }).getByText('Heart Station Chain Bracelet')).toHaveAttribute('aria-current', 'page')
+    await page.getByRole('link', { name: 'Back to Bracelets' }).click()
+    await expect(page).toHaveURL(/\/collections\?category=Bracelets$/)
+  })
+
+  test('returns not found for an unknown product', async ({ page }) => {
+    const response = await page.goto('http://localhost:3000/products/does-not-exist')
+    expect(response?.status()).toBe(404)
+  })
+
+  test('navigates to a category and switches filters without reloading', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 })
+    await page.goto('http://localhost:3000')
+    const categories = page.getByRole('navigation', { name: 'Product types' })
+    await categories.getByRole('link', { name: 'Bracelets' }).click()
+    await expect(page).toHaveURL(/\/collections\?category=Bracelets$/)
+    await expect(page.getByRole('heading', { name: 'Bracelets', exact: true })).toBeVisible()
+    const breadcrumb = page.getByRole('navigation', { name: 'Breadcrumb' })
+    await expect(breadcrumb.getByRole('link', { name: 'Home' })).toHaveAttribute('href', '/')
+    await expect(breadcrumb.getByRole('link', { name: 'Collections' })).toHaveAttribute('href', '/collections')
+    await expect(breadcrumb.getByText('Bracelets')).toHaveAttribute('aria-current', 'page')
+    await expect(page.getByRole('heading', { name: 'Heart Station Chain Bracelet' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Heart Charm Necklace' })).toHaveCount(0)
+
+    await page.getByRole('button', { name: 'Save Heart Station Chain Bracelet to wishlist' }).click()
+    await page.evaluate(() => { document.documentElement.dataset.categoryTest = 'preserved' })
+    await categories.getByRole('link', { name: 'Necklaces' }).click()
+    await expect(page).toHaveURL(/category=Necklaces$/)
+    await expect(breadcrumb.getByText('Necklaces')).toHaveAttribute('aria-current', 'page')
+    await expect(categories.getByRole('link', { name: 'Necklaces' })).toHaveAttribute('aria-current', 'page')
+    await expect(categories.getByRole('link', { name: 'Necklaces' })).toHaveCSS('box-shadow', /rgba\(26, 26, 26, 0\.3\) 0px 6px 5px -5px/)
+    await categories.getByRole('link', { name: 'Earrings' }).hover()
+    await expect(categories.getByRole('link', { name: 'Earrings' })).toHaveCSS('box-shadow', /rgba\(26, 26, 26, 0\.3\) 0px 6px 5px -5px/)
+    await expect(page.getByRole('heading', { name: 'Heart Charm Necklace' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Heart Station Chain Bracelet' })).toHaveCount(0)
+    await expect(page.locator('html')).toHaveAttribute('data-category-test', 'preserved')
+
+    await page.goBack()
+    await expect(page.getByRole('heading', { name: 'Bracelets', exact: true })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Save Heart Station Chain Bracelet to wishlist' })).toHaveAttribute('aria-pressed', 'true')
+
+    await categories.getByRole('link', { name: 'Earrings' }).click()
+    await expect(page.getByText('No products found in this category.')).toBeVisible()
+    await expect(page.locator('html')).toHaveAttribute('data-category-test', 'preserved')
+  })
+
+  test('supports category selection from the mobile menu', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 })
+    await page.goto('http://localhost:3000')
+    await page.getByRole('button', { name: 'Open menu' }).click()
+    const categoryImages = page.getByRole('dialog').getByRole('navigation', { name: 'Product types' }).locator('img')
+    await expect(categoryImages).toHaveCount(4)
+    await expect(page.getByRole('dialog').getByRole('link', { name: 'Necklaces' }).locator('img')).toHaveAttribute('alt', '')
+    await page.getByRole('dialog').getByRole('link', { name: 'Necklaces' }).click()
+    await expect(page).toHaveURL(/\/collections\?category=Necklaces$/)
+    await expect(page.getByRole('heading', { name: 'Heart Charm Necklace' })).toBeVisible()
+    await expect(page.getByRole('dialog')).not.toBeVisible()
+  })
+})
+
 test.describe('Storefront landing page', () => {
   test('shows the desktop design and switches hero images', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 1000 })

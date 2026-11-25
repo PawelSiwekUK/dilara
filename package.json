@@ -10,6 +10,7 @@
     "db:setup-users": "node scripts/setup-users.mjs",
     "test:users": "node --conditions=react-server --import tsx --test tests/users-schema.test.mjs tests/users-model.test.ts tests/customer-accounts.test.ts tests/session-policy.test.ts",
     "test:staff": "node --conditions=react-server --import tsx --test tests/staff.integration.test.ts",
+    "test:integration": "vitest run tests/int --environment jsdom",
     "auth:secret": "node scripts/setup-auth-secret.mjs",
     "auth:create-admin": "node scripts/create-admin.mjs",
     "auth:assign-owner": "node scripts/assign-owner.mjs"

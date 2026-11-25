@@ -21,7 +21,10 @@ export const products = [
     id: 'p1',
     badge: 'Bestseller',
     title: 'Heart Station Chain Bracelet',
+<<<<<<< HEAD
     type: 'Bracelets' as const,
+=======
+>>>>>>> migration
     metal: '18k Gold Vermeil / Silver',
     swatch: '#D6B97B',
     originalPrice: 85,
@@ -32,7 +35,10 @@ export const products = [
     id: 'p2',
     badge: 'Bestseller',
     title: 'Heart Charm Necklace',
+<<<<<<< HEAD
     type: 'Necklaces' as const,
+=======
+>>>>>>> migration
     metal: '18k Gold Vermeil / Silver',
     swatch: '#D6B97B',
     originalPrice: 105,
@@ -43,7 +49,10 @@ export const products = [
     id: 'p3',
     badge: 'New in',
     title: 'The Angellica Moonstone Cabochon Ring',
+<<<<<<< HEAD
     type: 'Rings' as const,
+=======
+>>>>>>> migration
     metal: '925 Sterling Silver',
     swatch: '#D4D6D8',
     price: 120,
@@ -53,7 +62,10 @@ export const products = [
     id: 'p4',
     badge: '',
     title: 'The Ferosia Multi Gemstone Cuff',
+<<<<<<< HEAD
     type: 'Bracelets' as const,
+=======
+>>>>>>> migration
     metal: '925 Sterling Silver',
     swatch: '#D4D6D8',
     price: 155,
@@ -63,7 +75,10 @@ export const products = [
     id: 'p5',
     badge: 'Limited',
     title: 'Baguette Sterling Silver Blue Opal & Marcasite Set',
+<<<<<<< HEAD
     type: 'Sets' as const,
+=======
+>>>>>>> migration
     metal: '925 Sterling Silver',
     swatch: '#A9C8E8',
     price: 135,
@@ -73,6 +88,7 @@ export const products = [
 
 export type StorefrontProduct = (typeof products)[number]
 
+<<<<<<< HEAD
 export const productTypes = [
   { name: 'Bracelets', image: products[0].image },
   { name: 'Necklaces', image: products[1].image },
@@ -80,6 +96,8 @@ export const productTypes = [
   { name: 'Sets', image: products[4].image },
 ] satisfies { name: StorefrontProduct['type']; image: string }[]
 
+=======
+>>>>>>> migration
 export const categories = [
   { name: 'Bracelets', image: photo('photo-1611591437281-460bfbe1220a', 900) },
   { name: 'Earrings', image: photo('photo-1535632066927-ab7c9ab60908', 900) },
@@ -89,7 +107,11 @@ export const categories = [
 
 export const navigation = [
   { href: '/', label: 'Home' },
+<<<<<<< HEAD
   { href: '/collections', label: 'Collections' },
+=======
+  { href: '#collections-section', label: 'Collections' },
+>>>>>>> migration
   { href: '#heritage-section', label: 'About' },
   { href: '#service-strip', label: 'Shipping & Returns Policy' },
   { href: '#craftsmen-section', label: 'More' },

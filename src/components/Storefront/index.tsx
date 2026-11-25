@@ -3,9 +3,15 @@
 import {
   ArrowLeft,
   ArrowRight,
+<<<<<<< HEAD
   Facebook,
   Heart,
   Instagram,
+=======
+  Camera,
+  Globe,
+  Heart,
+>>>>>>> migration
   Menu,
   MessageSquare,
   RotateCcw,
@@ -26,15 +32,25 @@ import {
   DialogDescription,
   DialogTitle,
   DialogTrigger,
+<<<<<<< HEAD
 } from '@/components/ui/dialog'
 import { categories, heroSlides, navigation, products, workshopImage } from './data'
 import type { StorefrontProduct } from './data'
 import { ProductCard, ProductPrice, money } from './ProductCard'
+=======
+} from '@/src/components/ui/dialog'
+import { categories, heroSlides, navigation, products, workshopImage } from './data'
+import type { StorefrontProduct } from './data'
+>>>>>>> migration
 
 const buttonClass =
   'inline-flex items-center justify-center bg-brand-charcoal px-8 py-3 text-[10px] font-medium uppercase tracking-brand text-brand-white transition-colors hover:bg-black'
 const dialogClass =
   'rounded-none border-brand-border bg-brand-white font-storefront text-brand-charcoal'
+<<<<<<< HEAD
+=======
+const money = (value: number) => `\u00a3${value}`
+>>>>>>> migration
 
 function Brand() {
   return (
@@ -58,6 +74,27 @@ function Brand() {
   )
 }
 
+<<<<<<< HEAD
+=======
+function ProductPrice({ product }: { product: StorefrontProduct }) {
+  return (
+    <span className="flex flex-wrap items-center gap-1.5 text-[11px]">
+      {product.originalPrice ? (
+        <>
+          <span className="text-brand-muted line-through">{money(product.originalPrice)}</span>
+          <span className="font-semibold text-brand-sale">{money(product.price)}</span>
+          <span className="text-[10px] text-brand-muted">
+            {Math.round((1 - product.price / product.originalPrice) * 100)}% off
+          </span>
+        </>
+      ) : (
+        <span className="font-medium">{money(product.price)}</span>
+      )}
+    </span>
+  )
+}
+
+>>>>>>> migration
 export function Storefront() {
   const [heroIndex, setHeroIndex] = useState(0)
   const [wishlist, setWishlist] = useState<string[]>([])
@@ -99,6 +136,12 @@ export function Storefront() {
       <a href="#main-content" className="sr-only z-50 bg-white p-3 focus:not-sr-only focus:fixed">
         Skip to content
       </a>
+<<<<<<< HEAD
+=======
+      <p className="bg-brand-surface px-4 py-2 text-center text-xs">
+        Preview: products and bag selections are examples. Checkout is not connected.
+      </p>
+>>>>>>> migration
       <header className="sticky top-0 z-40 border-b border-brand-border/70 bg-brand-white/95 backdrop-blur-sm">
         <div className="mx-auto max-w-[1380px] px-4 pt-3.5 pb-3 sm:px-8 md:pt-5 md:pb-4">
           <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center">
@@ -146,7 +189,16 @@ export function Storefront() {
             </div>
             <Brand />
             <div className="-mr-1 flex items-center justify-end sm:gap-2">
+<<<<<<< HEAD
               <Link href="/login" aria-label="Account" className="p-1.5 sm:p-2">
+=======
+              <Link
+                href="/account"
+                aria-label="Customer account"
+                title="Customer account"
+                className="p-1.5 sm:p-2"
+              >
+>>>>>>> migration
                 <User size={18} strokeWidth={1.4} />
               </Link>
               <button
@@ -279,6 +331,7 @@ export function Storefront() {
               className="flex snap-x snap-mandatory gap-3.5 overflow-x-auto pb-2 [scrollbar-width:none] sm:gap-5 [&::-webkit-scrollbar]:hidden"
             >
               {products.map((product) => (
+<<<<<<< HEAD
                 <ProductCard
                   key={product.id}
                   product={product}
@@ -291,6 +344,77 @@ export function Storefront() {
                   onToggleWishlist={() => toggleWishlist(product)}
                   onAddToBag={() => addToBag(product)}
                 />
+=======
+                <article
+                  key={product.id}
+                  className="group flex w-[46%] shrink-0 snap-start flex-col sm:w-[31%] lg:w-[23.8%]"
+                >
+                  <div className="relative aspect-square overflow-hidden bg-brand-surface transition-[background-color,box-shadow] duration-300 hover:bg-[#f1f1f1] hover:shadow-[0_10px_26px_#1a1a1a0d]">
+                    <button
+                      onClick={(event) => {
+                        productTrigger.current = event.currentTarget
+                        setActiveProduct(product)
+                      }}
+                      aria-label={`View ${product.title}`}
+                      className="absolute inset-0 flex items-center justify-center"
+                    >
+                      <span className="relative block size-3/4">
+                        <Image
+                          src={product.image}
+                          alt={product.title}
+                          fill
+                          sizes="(max-width: 640px) 35vw, (max-width: 1024px) 24vw, 240px"
+                          quality={90}
+                          className="object-contain mix-blend-multiply transition-transform duration-700 ease-out group-hover:scale-[1.045] motion-reduce:transition-none"
+                        />
+                      </span>
+                    </button>
+                    {product.badge && (
+                      <span className="pointer-events-none absolute top-2.5 right-2.5 border border-brand-border/60 bg-brand-white px-2 py-0.5 text-[8px] font-medium uppercase tracking-wider sm:text-[9px]">
+                        {product.badge}
+                      </span>
+                    )}
+                    <button
+                      aria-label={`Save ${product.title} to wishlist`}
+                      aria-pressed={wishlist.includes(product.id)}
+                      onClick={() => toggleWishlist(product)}
+                      className="absolute top-1 left-1 flex size-9 items-center justify-center text-brand-muted hover:text-brand-charcoal"
+                    >
+                      <Heart
+                        size={14}
+                        strokeWidth={1.5}
+                        fill={wishlist.includes(product.id) ? 'currentColor' : 'none'}
+                      />
+                    </button>
+                  </div>
+                  <div className="flex flex-1 flex-col justify-between pt-2.5">
+                    <div>
+                      <h3 className="line-clamp-2 text-[11px] leading-snug font-medium sm:text-[12px]">
+                        {product.title}
+                      </h3>
+                      <div className="mt-1 flex items-center gap-1.5">
+                        <span
+                          className="inline-block size-3 shrink-0 rounded-full border border-brand-charcoal/30"
+                          style={{ backgroundColor: product.swatch }}
+                        />
+                        <span className="truncate text-[10px] text-brand-muted">
+                          {product.metal}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="mt-1.5 flex items-center justify-between gap-2">
+                      <ProductPrice product={product} />
+                      <button
+                        aria-label={`Add ${product.title} to bag`}
+                        onClick={() => addToBag(product)}
+                        className="shrink-0 border-b border-brand-charcoal/50 py-1 text-[9px] font-medium uppercase tracking-wider hover:border-brand-charcoal"
+                      >
+                        + Bag
+                      </button>
+                    </div>
+                  </div>
+                </article>
+>>>>>>> migration
               ))}
             </div>
           </div>
@@ -440,8 +564,13 @@ export function Storefront() {
         <div className="mx-auto max-w-[920px] px-6 text-center">
           <div className="mb-7 flex items-center justify-center gap-3.5">
             {[
+<<<<<<< HEAD
               { label: 'Facebook', icon: <Facebook size={16} /> },
               { label: 'Instagram', icon: <Instagram size={16} /> },
+=======
+              { label: 'Facebook', icon: <Globe size={16} /> },
+              { label: 'Instagram', icon: <Camera size={16} /> },
+>>>>>>> migration
               { label: 'TikTok', icon: <span className="text-sm font-semibold">♪</span> },
               { label: 'X', icon: <span className="text-sm">X</span> },
             ].map(({ label, icon }) => (
@@ -465,6 +594,12 @@ export function Storefront() {
                 {label}
               </button>
             ))}
+<<<<<<< HEAD
+=======
+            <Link href="/admin/login" className="hover:text-brand-charcoal">
+              Admin sign in
+            </Link>
+>>>>>>> migration
           </div>
           <p className="mx-auto mb-10 max-w-[680px] text-[9.5px] leading-[1.75] text-brand-muted sm:text-[10.5px]">
             Dilara&apos;s Finesse Ltd (Registered in England &amp; Wales) is authorised and

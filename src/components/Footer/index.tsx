@@ -1,3 +1,0 @@
-export function Footer() {
-  return <footer className="text-sm text-neutral-500 dark:text-neutral-400"></footer>
-}

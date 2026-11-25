@@ -12,6 +12,15 @@
   --font-script: var(--font-great-vibes), cursive;
   --tracking-editorial: 0.32em;
   --tracking-brand: 0.22em;
+  --text-xs: calc(0.75rem + 1px);
+  --text-sm: calc(0.875rem + 1px);
+  --text-base: calc(1rem + 1px);
+  --text-lg: calc(1.125rem + 1px);
+  --text-xl: calc(1.25rem + 1px);
+  --text-2xl: calc(1.5rem + 1px);
+  --text-3xl: calc(1.875rem + 1px);
+  --text-4xl: calc(2.25rem + 1px);
+  --text-5xl: calc(3rem + 1px);
   --color-brand-white: #ffffff;
   --color-brand-surface: #f6f6f6;
   --color-brand-charcoal: #1a1a1a;
@@ -19,4 +28,18 @@
   --color-brand-subtle: #8c8c8c;
   --color-brand-border: #e6e6e6;
   --color-brand-sale: #b83a3a;
+}
+
+@layer base {
+  body {
+    font-size: calc(1rem + 1px);
+  }
+}
+
+html [data-sonner-toast][data-styled='true'] {
+  font-size: 14px;
+}
+
+html [data-sonner-toast][data-styled='true'] [data-button] {
+  font-size: 13px;
 }

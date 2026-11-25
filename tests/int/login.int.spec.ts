@@ -1,32 +1,14 @@
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { createElement } from 'react'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
-import { LoginForm } from '@/components/forms/LoginForm'
+import { AccountForm } from '../../src/app/account/account-form'
+import type { AccountResult } from '../../src/lib/auth/customer-accounts'
 
-const { login, push, refresh } = vi.hoisted(() => ({
-  login: vi.fn(),
-  push: vi.fn(),
-  refresh: vi.fn(),
-}))
-
-vi.mock('@/providers/Auth', () => ({
-  useAuth: () => ({ login }),
-}))
-
-vi.mock('next/navigation', () => ({
-  useRouter: () => ({ push, refresh }),
-  useSearchParams: () => new URLSearchParams(),
-}))
-
-describe('Customer login', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
-  })
-
+describe('Customer login form', () => {
   afterEach(cleanup)
 
-  const submitCredentials = () => {
+  function submitCredentials() {
     fireEvent.change(screen.getByLabelText('Email'), {
       target: { value: 'customer@example.com' },
     })
@@ -36,34 +18,28 @@ describe('Customer login', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Sign in' }))
   }
 
-  it('authenticates through the shared provider and returns to the home page', async () => {
-    login.mockResolvedValue({ id: 'customer' })
-    render(createElement(LoginForm))
+  it('submits the supplied credentials to the login action', async () => {
+    const action = vi.fn(async (_state: AccountResult | undefined, _data: FormData) => undefined)
+    render(createElement(AccountForm, { action, kind: 'login', button: 'Sign in' }))
 
     submitCredentials()
 
-    await waitFor(() => {
-      expect(login).toHaveBeenCalledWith({
-        email: 'customer@example.com',
-        password: 'example-password',
-      })
-      expect(push).toHaveBeenCalledWith('/')
-      expect(refresh).toHaveBeenCalledOnce()
-    })
+    await waitFor(() => expect(action).toHaveBeenCalledOnce())
+    const formData = action.mock.calls[0][1]
+    expect(formData.get('email')).toBe('customer@example.com')
+    expect(formData.get('password')).toBe('example-password')
   })
 
-  it('shows failed authentication without navigating away', async () => {
-    login.mockRejectedValue(new Error('Invalid login'))
-    render(createElement(LoginForm))
+  it('shows an authentication error and allows another attempt', async () => {
+    const action = vi.fn(async () => ({
+      ok: false,
+      message: 'Unable to sign in. Check your details or try again later.',
+    }))
+    render(createElement(AccountForm, { action, kind: 'login', button: 'Sign in' }))
 
     submitCredentials()
 
-    await waitFor(() => {
-      expect(screen.getByRole('alert').textContent).toContain(
-        'There was an error with the credentials provided.',
-      )
-    })
-    expect(push).not.toHaveBeenCalled()
-    expect(refresh).not.toHaveBeenCalled()
+    expect((await screen.findByRole('alert')).textContent).toContain('Unable to sign in.')
+    expect((screen.getByRole('button', { name: 'Sign in' }) as HTMLButtonElement).disabled).toBe(false)
   })
 })

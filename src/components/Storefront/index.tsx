@@ -11,7 +11,7 @@ import { categories, heroSlides, navigation, products, workshopImage } from './d
 import type { StorefrontProduct } from './data';
 
 const dialogClass = 'rounded-none border-brand-border bg-brand-white font-storefront text-brand-charcoal';
-
+const buttonClass = '';
 const money = (value: number) => `\u00a3${value}`;
 
 function Brand() {
@@ -278,58 +278,41 @@ export function Storefront() {
 						</div>
 					</div>
 				</section>
-        <section
-          id="category-section"
-          aria-label="Shop by category"
-          className="scroll-mt-40 pt-4 pb-12 sm:pb-16"
-        >
-          <div className="mx-auto max-w-[1380px] sm:px-8">
-            <div className="mb-8 px-4 text-center sm:mb-10">
-              <p className="mb-1.5 text-[10px] font-medium uppercase tracking-brand text-brand-muted sm:text-[11px]">
-                Shop by
-              </p>
-              <h2 className="text-[20px] font-normal uppercase tracking-editorial sm:text-[24px]">
-                Category
-              </h2>
-            </div>
-            <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
-              {categories.map((category) => (
-                <article key={category.name} className="group overflow-hidden bg-brand-surface">
-                  <h3 className="px-3 pt-4 pb-3 text-center text-[13px] font-normal uppercase tracking-brand sm:text-[15px]">
-                    {category.name}
-                  </h3>
-                  <div className="relative aspect-[4/5] overflow-hidden bg-[#eaeaea]">
-                    <Image
-                      src={category.image}
-                      alt={`${category.name} collection`}
-                      fill
-                      quality={90}
-                      sizes="(max-width: 1024px) 50vw, 25vw"
-                      className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.035] motion-reduce:transition-none"
-                    />
-                  </div>
-                  <div className="flex flex-col items-center px-3 pt-4 pb-4 text-center">
-                    <button
-                      className={buttonClass}
-                      onClick={() =>
-                        toast.info(
-                          `${category.name} collection is not connected to the catalogue yet.`,
-                        )
-                      }
-                    >
-                      Shop {category.name}
-                    </button>
-                    <div aria-hidden="true" className="mt-6 flex w-full items-center gap-2">
-                      <span className="size-1.5 rounded-full bg-brand-charcoal" />
-                      <span className="size-1.5 rounded-full bg-brand-charcoal/25" />
-                      <span className="size-1.5 rounded-full bg-brand-charcoal/25" />
-                    </div>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
+				<section id='category-section' aria-label='Shop by category' className='scroll-mt-40 pt-4 pb-12 sm:pb-16'>
+					<div className='mx-auto max-w-[1380px] sm:px-8'>
+						<div className='mb-8 px-4 text-center sm:mb-10'>
+							<p className='mb-1.5 text-[10px] font-medium uppercase tracking-brand text-brand-muted sm:text-[11px]'>Shop by</p>
+							<h2 className='text-[20px] font-normal uppercase tracking-editorial sm:text-[24px]'>Category</h2>
+						</div>
+						<div className='grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4'>
+							{categories.map((category) => (
+								<article key={category.name} className='group overflow-hidden bg-brand-surface'>
+									<h3 className='px-3 pt-4 pb-3 text-center text-[13px] font-normal uppercase tracking-brand sm:text-[15px]'>{category.name}</h3>
+									<div className='relative aspect-[4/5] overflow-hidden bg-[#eaeaea]'>
+										<Image
+											src={category.image}
+											alt={`${category.name} collection`}
+											fill
+											quality={90}
+											sizes='(max-width: 1024px) 50vw, 25vw'
+											className='object-cover transition-transform duration-700 ease-out group-hover:scale-[1.035] motion-reduce:transition-none'
+										/>
+									</div>
+									<div className='flex flex-col items-center px-3 pt-4 pb-4 text-center'>
+										<button className={buttonClass} onClick={() => toast.info(`${category.name} collection is not connected to the catalogue yet.`)}>
+											Shop {category.name}
+										</button>
+										<div aria-hidden='true' className='mt-6 flex w-full items-center gap-2'>
+											<span className='size-1.5 rounded-full bg-brand-charcoal' />
+											<span className='size-1.5 rounded-full bg-brand-charcoal/25' />
+											<span className='size-1.5 rounded-full bg-brand-charcoal/25' />
+										</div>
+									</div>
+								</article>
+							))}
+						</div>
+					</div>
+				</section>
 
 				<section id='category-section' aria-label='Shop by category' className='scroll-mt-40 pt-4 pb-12 sm:pb-16'>
 					<div className='mx-auto max-w-[1380px] sm:px-8'>
@@ -368,7 +351,6 @@ export function Storefront() {
 						</div>
 					</div>
 				</section>
-
 
 				<section id='service-strip' aria-label='Customer guarantees' className='scroll-mt-40 border-y border-brand-border/70 px-4 py-10 sm:px-8 sm:py-12'>
 					<div className='mx-auto grid max-w-[1140px] grid-cols-2 gap-x-4 gap-y-8 sm:gap-8 md:grid-cols-4'>
@@ -513,8 +495,8 @@ export function Storefront() {
 								</div>
 								<DialogClose asChild>
 									<button
-									className='mt-6 w-full border border-brand-charcoal px-5 py-3 text-[10px] font-medium uppercase tracking-brand transition-colors hover:bg-brand-charcoal hover:text-brand-white'
-									onClick={() => addToBag(activeProduct)}>
+										className='mt-6 w-full border border-brand-charcoal px-5 py-3 text-[10px] font-medium uppercase tracking-brand transition-colors hover:bg-brand-charcoal hover:text-brand-white'
+										onClick={() => addToBag(activeProduct)}>
 										Add to Bag
 									</button>
 								</DialogClose>
